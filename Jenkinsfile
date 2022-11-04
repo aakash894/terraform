@@ -32,5 +32,24 @@ pipeline {
                 '''
             }
         }
+        stage('terraform output'){
+            steps {
+                sh'''
+                IP=$(terraform output -json Intance_public_ip | jq -r)
+                echo $IP
+                ssh -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "rm -rf cassandra"
+                ssh -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "git clone https://github.com/aakash894/cassandra.git"
+                '''
+            }
+        }
+        stage('Cluster setup'){
+            steps {
+                sh'''
+                IP=$(terraform output -json Intance_public_ip | jq -r)
+                echo $IP
+                ssh -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "ansible-playbook -i Invnetory ~/cassandra/Cassandra_review/test/cassandra.yml"
+                '''
+            }
+        }
     }    
 }
