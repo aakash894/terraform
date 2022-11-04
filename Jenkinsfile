@@ -32,7 +32,7 @@ pipeline {
                 '''
             }
         }
-        stage('terraform output'){
+        stage('Git clone'){
             steps {
                 sh'''
                 IP=$(terraform output -json Intance_public_ip | jq -r)
