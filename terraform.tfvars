@@ -51,7 +51,7 @@ tags_ec2_pub = {
   Type  = "Database"
   Owner = "aakash"
 }
-ami = "ami-08c40ec9ead489470"
+ami = "ami-097a2df4ac947655f"
 instance_type = "t3.medium"
-key_name = "newkey"
+key_name = "ohio"
 node_count = 3
