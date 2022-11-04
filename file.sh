@@ -11,7 +11,7 @@ for line in $IP
 do
     y=$(echo "${line}") 
     IP=$(echo $y | awk -F, '{print $1}')
-    echo "node1 ansible_host=${IP} ansible_user=${USER} ansible_ssh_private_key_file=${Key_path}" >> Invnetory 
+    echo "ansible_host=${IP} ansible_user=${USER} ansible_ssh_private_key_file=${Key_path} ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> Invnetory 
     ((i++))
 done
 cat Invnetory
