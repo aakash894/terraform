@@ -16,5 +16,21 @@ pipeline {
                 sh 'terraform apply --auto-approve'
             }
         }
+        stage('terraform output'){
+            steps {
+                sh 'sh file.sh ubuntu /home/ubuntu/kubernetes.pem'
+            }
+        }
+        stage('Copy data'){
+            steps {
+                sh'''
+                IP=$(terraform output -json Intance_public_ip | jq -r)
+                echo $IP
+                ssh -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "rm -rf Invnetory kubernetes.pem"
+                scp -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -r /var/lib/jenkins/workspace/Tool-infra/Invnetory ubuntu@$IP:~
+                scp -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -r /var/lib/jenkins/kubernetes.pem ubuntu@$IP:~
+                '''
+            }
+        }
     }    
 }
