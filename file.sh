@@ -2,17 +2,20 @@
 set -x
 USER=$1
 Key_path=$2
-IP=$(terraform output -json Instance_ips | jq -r '.[]')
-echo $IP
-touch Invnetory ~/tool-infra
+touch datafile
+echo "" > datafile
+IP=$(terraform output -json Instance_ips | jq -r '.[]') 
+echo $IP > datafile
+touch Invnetory 
 echo "" > Invnetory
 echo "[seed-nodes]" > Invnetory
-for line in $IP
+for line in $(cat datafile)
 do
     y=$(echo "${line}") 
     IP=$(echo $y | awk -F, '{print $1}')
-    echo "node${j} ansible_host=${IP} ansible_user=${USER} ansible_ssh_private_key_file=${Key_path} ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> Invnetory 
-    ((j++))
+    echo "node${j} ansible_host=${IP} ansible_user=${USER} ansible_ssh_private_key_file=${Key_path}" >> Invnetory
+    ((j++)) 
     ((i++))
 done
 cat Invnetory
+rm datafile
