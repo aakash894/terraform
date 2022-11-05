@@ -27,7 +27,10 @@ pipeline {
         }
         stage('terraform output'){
             steps {
-                sh 'sh file.sh ubuntu /home/ubuntu/oregon.pem'
+                sh'''
+                chmod +x file.sh
+                ./file.sh ubuntu /home/ubuntu/oregon.pem
+                '''
             }
         }
         stage('Copy data'){
