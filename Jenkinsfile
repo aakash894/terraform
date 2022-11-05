@@ -27,7 +27,7 @@ pipeline {
                 IP=$(terraform output -json Intance_public_ip | jq -r)
                 echo $IP
                 ssh -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "rm -rf Invnetory oregon.pem"
-                scp -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -r /var/lib/jenkins/workspace/Tool-infra/Invnetory ubuntu@$IP:~
+                scp -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -r Invnetory ubuntu@$IP:~
                 scp -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -r /var/lib/jenkins/oregon.pem ubuntu@$IP:~
                 '''
             }
