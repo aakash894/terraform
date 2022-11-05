@@ -18,7 +18,7 @@ pipeline {
         }
         stage('terraform output'){
             steps {
-                sh 'sh file.sh ubuntu /home/ubuntu/kubernetes.pem'
+                sh 'sh file.sh ubuntu /home/ubuntu/oregon.pem'
             }
         }
         stage('Copy data'){
@@ -26,9 +26,18 @@ pipeline {
                 sh'''
                 IP=$(terraform output -json Intance_public_ip | jq -r)
                 echo $IP
-                ssh -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "rm -rf Invnetory kubernetes.pem"
-                scp -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -r /var/lib/jenkins/workspace/Tool-infra/Invnetory ubuntu@$IP:~
-                scp -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -r /var/lib/jenkins/kubernetes.pem ubuntu@$IP:~
+                ssh -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "rm -rf Invnetory oregon.pem"
+                scp -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -r /var/lib/jenkins/workspace/Tool-infra/Invnetory ubuntu@$IP:~
+                scp -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -r /var/lib/jenkins/oregon.pem ubuntu@$IP:~
+                '''
+            }
+        }
+        stage('Configure ansible'){
+            steps {
+                sh'''
+                IP=$(terraform output -json Intance_public_ip | jq -r)
+                echo $IP
+                ssh -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "sudo apt update -y && sudo apt-add-repository ppa:ansible/ansible -y && sudo apt install ansible -y"
                 '''
             }
         }
@@ -37,8 +46,8 @@ pipeline {
                 sh'''
                 IP=$(terraform output -json Intance_public_ip | jq -r)
                 echo $IP
-                ssh -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "rm -rf cassandra"
-                ssh -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "git clone https://github.com/aakash894/cassandra.git"
+                ssh -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "rm -rf cassandra"
+                ssh -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "git clone https://github.com/aakash894/cassandra.git"
                 '''
             }
         }
@@ -47,7 +56,7 @@ pipeline {
                 sh'''
                 IP=$(terraform output -json Intance_public_ip | jq -r)
                 echo $IP
-                ssh -i "/var/lib/jenkins/kubernetes.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "ansible-playbook -i Invnetory ~/cassandra/Cassandra_review/test/cassandra.yml"
+                ssh -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "ansible-playbook -i Invnetory ~/cassandra/Cassandra_review/test/cassandra.yml"
                 '''
             }
         }
