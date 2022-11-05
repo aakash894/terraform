@@ -7,6 +7,7 @@ pipeline {
         string defaultValue: 't2.medium', description: 'Input instance type', name: 'instance_type'
         string defaultValue: 'oregon', description: 'Input key pair name which you want to provide to your machine & ensure it will be pre-generated', name: 'key_name'
         string defaultValue: '3', description: 'Input node count for your database cluster', name: 'node_count'
+        choice choices: ['4.0.7', '3.11.14', '3.0.28'], description: 'Select your cassandra database version', name: 'version'
     }
     stages {
         stage('terraform format check') {
@@ -64,7 +65,7 @@ pipeline {
                 sh'''
                 IP=$(terraform output -json Intance_public_ip | jq -r)
                 echo $IP
-                ssh -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "ansible-playbook -i Invnetory ~/cassandra/Cassandra_review/test/cassandra.yml"
+                ssh -i "/var/lib/jenkins/oregon.pem" -o StrictHostKeyChecking=no -tt ubuntu@$IP "ansible-playbook -e version=${version} -i Invnetory ~/cassandra/Cassandra_review/test/cassandra.yml"
                 '''
             }
         }
