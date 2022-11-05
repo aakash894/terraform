@@ -14,7 +14,7 @@ pipeline {
         }
         stage('terraform apply'){
             steps {
-                sh 'terraform apply --auto-approve -var="AZ1=${AZ1}" -var="AZ2=${AZ2}" -var="ami=${AMI}" -var="instance_type=${instance_type}" -var"key_name=${key_name}" -var="node_count=${node_count}"'
+                sh 'terraform apply --auto-approve -var="AZ1=${AZ1}" -var="AZ2=${AZ2}" -var="ami=${AMI}" -var="instance_type=${instance_type}" -var="key_name=${key_name}" -var="node_count=${node_count}"'
             }
         }
         stage('terraform output'){
