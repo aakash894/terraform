@@ -5,7 +5,8 @@ Key_path=$2
 touch datafile
 echo "" > datafile
 IP=$(terraform output -json Instance_ips | jq -r '.[]') 
-echo $IP > datafile
+echo $IP >> datafile
+cat datafile
 touch Invnetory 
 echo "" > Invnetory
 echo "[seed-nodes]" > Invnetory
