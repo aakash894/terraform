@@ -53,5 +53,5 @@ tags_ec2_pub = {
 }
 ami = "ami-017fecd1353bcc96e"
 instance_type = "t2.medium"
-key_name = "kubernetes"
+key_name = "oregon"
 node_count = 3
